@@ -13,7 +13,7 @@ public class Game {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TDeck deck = new TDeck();
+		TDeck deck = new TDeck("");
 		deck.shuffle();
 		
 		HashMap<Integer,Hand> players = new HashMap<Integer,Hand>(4);

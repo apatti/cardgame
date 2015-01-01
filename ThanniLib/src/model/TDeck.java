@@ -5,9 +5,9 @@ import java.util.Collections;
 
 public class TDeck extends Deck {
 	private ArrayList<Card> cards;
-	public TDeck()
+	public TDeck(String imageResourcePath)
 	{
-		super();
+		super(imageResourcePath);
 		cards= new ArrayList<Card>(24);
 		for(Card card : super.getCards())
 		{

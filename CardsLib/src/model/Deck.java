@@ -1,13 +1,16 @@
 package model;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public abstract class Deck {
 	private ArrayList<Card> cards;
 	
-	public Deck()
+	public Deck(String imageResourcePath)
 	{
+		if(imageResourcePath.isEmpty())
+			imageResourcePath = "/images/";
 		this.cards = new ArrayList<Card>(56);
 		for(Suite suite: Suite.values())
 		{
@@ -15,6 +18,7 @@ public abstract class Deck {
 			{
 				String faceValue="";
 				int value=0;
+				URL imagePath = getClass().getResource(imageResourcePath+String.valueOf((suite.value*13)+i+1)+".png");
 				if(i>0&&i<10)
 				{
 					value=i+1;
@@ -39,7 +43,7 @@ public abstract class Deck {
 						break;
 					}
 				}
-				this.cards.add(new Card(faceValue, suite, value, null));
+				this.cards.add(new Card(faceValue, suite, value, imagePath.getPath()));
 			}
 		}
 	}
