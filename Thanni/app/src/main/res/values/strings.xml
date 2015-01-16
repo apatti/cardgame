@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Thanni</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="player1_name">Badshah</string>
+    <string name="player2_name">Veeru</string>
+    <string name="player3_name">Begham</string>
+    <string name="beat_bet">Beat</string>
+    <string name="sixty_bet">60</string>
+    <string name="seventy_bet">70</string>
+    <string name="eighty_bet">80</string>
+    <string name="ninety_bet">90</string>
+    <string name="John_bet">Jaan</string>
+    <string name="thanni_bet">Thanni</string>
+    <string name="pass_bet">Pass</string>
+    <string name="dealer">Dealer</string>
+    <string name="scoreTxt">Score:0</string>
+    <string name="trumpTxt">Trump:?</string>
+    <string name="trumpTeamTxt">Team:?</string>
+    <string name="roundTargetTxt">Target:0</string>
+
+</resources>
