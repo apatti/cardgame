@@ -1,51 +1,76 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents the cards dealt to a player
  * @author apatti
  *
  */
-public class Hand {
-	private HashMap<String,Card> cards;
+public class Hand{
+	private ArrayList<Card> cards;
 	
 	public Hand()
 	{
-		cards = new HashMap<String,Card>(6);
+		cards = new ArrayList<Card>(6);
 	}
 	
 	public void addCard(Card card)
 	{
-		this.cards.put(card.getName(), card);
+		this.cards.add(card);
 	}
 	
-	public Collection<Card> getCards()
+	public ArrayList<Card> getCards()
 	{
-		return (Collection<Card>) cards.values();
+		return cards;
 	}
 	
-	public Card playCard(String name)
+	public Card playCard(int id)
 	{
-		if(cards.containsKey(name))
+		for(int i=0;i<cards.size();i++)
 		{
-			Card card = cards.get(name);
-			cards.remove(name);
-			return card;
+			if(cards.get(i).getId()==id)
+			{
+				return cards.remove(i);
+			}
 		}
-		else
-			return null;
+		return null;
 	}
 	
 	public int getHandValue()
 	{
 		int value=0;
-		for(Card c : cards.values())
+		for(Card c : cards)
 		{
 			value+=c.getValue();
 		}
 		return value;
+	}
+	
+	public void moveCard(Card moveCard,Card moveToCard)
+	{
+		int cardLocation=0;
+		for(int i=0;i<cards.size();i++)
+		{
+			if(cards.get(i).getId()==moveCard.getId())
+			{
+				cards.remove(i);
+				cardLocation=i;
+				break;
+			}
+		}
+		for(int i=0;i<cards.size();i++)
+		{
+			if(cards.get(i).getId()==moveToCard.getId())
+			{
+				cards.add(i, moveCard);
+				return;
+			}
+		}
+		cards.add(cardLocation, moveCard);
 	}
 	
 }

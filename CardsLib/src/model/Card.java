@@ -1,11 +1,12 @@
 package model;
 
-public class Card {
+public class Card implements Comparable<Card> {
 	private int value;
 	private String path;
 	private String faceValue;
 	private Suite suite;
 	private int id;
+	private int resource_id;
 	
 	/***
 	 * 
@@ -14,8 +15,9 @@ public class Card {
 	 * @param value
 	 * @param path
 	 */
-	public Card(String faceValue,Suite suite,int value,String path)
+	public Card(int id,String faceValue,Suite suite,int value,String path)
 	{
+		this.id=id;
 		this.value=value;
 		this.path=path;
 		this.faceValue=faceValue;
@@ -36,6 +38,10 @@ public class Card {
 	{
 		return this.path;
 	}
+	public void setPath(String path)
+	{
+		this.path=path;
+	}
 	
 	public String getFaceValue()
 	{
@@ -50,5 +56,39 @@ public class Card {
 	{
 		return this.faceValue+" "+this.suite.toString();
 	}
+	
+	public int getId()
+	{
+		return this.id;
+	}
+	
+	public int getResourceId()
+	{
+		return this.resource_id;
+	}
+	
+	public void setResourceId(int resource_id)
+	{
+		this.resource_id=resource_id;
+	}
+
+	@Override
+	public int compareTo(Card compareCard) {
+		// TODO Auto-generated method stub
+		int compareSuite=compareCard.getSuit().value;
+		if(this.suite.value==compareSuite)
+		{
+			return compareCard.value-this.value;
+		}
+		else
+			return compareSuite-this.suite.value;
+	}
+	
+	@Override
+	public boolean equals(Object compareCard){
+		int compareValue = ((Card)compareCard).getValue();
+		return compareValue==this.value;
+	}
+
 
 }

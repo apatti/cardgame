@@ -19,6 +19,7 @@ public abstract class Deck {
 				String faceValue="";
 				int value=0;
 				URL imagePath = getClass().getResource(imageResourcePath+String.valueOf((suite.value*13)+i+1)+".png");
+				int id = (suite.value*13)+i;
 				if(i>0&&i<10)
 				{
 					value=i+1;
@@ -43,7 +44,7 @@ public abstract class Deck {
 						break;
 					}
 				}
-				this.cards.add(new Card(faceValue, suite, value, imagePath.getPath()));
+				this.cards.add(new Card(id,faceValue, suite, value, imagePath.getPath()));
 			}
 		}
 	}
@@ -57,6 +58,9 @@ public abstract class Deck {
 	{
 		return this.cards;
 	}
-
 	
+	public void setCardResourceId(int id,int resourceId)
+	{
+		this.cards.get(id).setResourceId(resourceId);
+	}
 }

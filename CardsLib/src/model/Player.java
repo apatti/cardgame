@@ -5,7 +5,7 @@ package model;
  * @author apatti
  * Represents the player of the game.
  */
-public class Player {
+public abstract class Player {
 	private String name;
 	private int id;
 	private Hand hand;
