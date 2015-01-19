@@ -19,10 +19,33 @@ public class TPlayer extends Player {
 		this.trumpAsked=false;
 	}
 	
+	public void setTrump(Card c)
+	{
+		this.trump=c;
+	}
+	
+	public boolean getTrumpAsked()
+	{
+		return this.trumpAsked;
+	}
+	
+	/**
+	 * Get the trump card and also remove it from the hand.
+	 * @return
+	 */
 	public Card getTrump()
 	{
 		if(this.trump==null)
 			selectTrump();
+		
+		for(Card c:this.getHand().getCards())
+		{
+			if(c.getId()==this.trump.getId())
+			{
+				this.getHand().getCards().remove(c);
+				break;
+			}
+		}
 		return this.trump;
 	}
 	

@@ -16,9 +16,15 @@ public class Game {
 	private int dealerId;
 	private Round currentRound;
 	private TDeck deck;
+	private DisplayCardListener displayCardListener;
+	private RequestUserCardListener requestUserCardListener;
+	private DisplayMessageListener displayMessageListener;
 	
-	public Game(ArrayList<String> playerNames)
+	public Game(ArrayList<String> playerNames,DisplayCardListener displayCardListener,RequestUserCardListener requestUserCardListener,DisplayMessageListener displayListener)
 	{
+		this.displayCardListener = displayCardListener;
+		this.requestUserCardListener = requestUserCardListener;
+		this.displayMessageListener=displayListener;
 		players = new ArrayList<TPlayer>(playerNames.size());
 		for(int i=0;i<playerNames.size();i++)
 		{
@@ -87,6 +93,64 @@ public class Game {
 		//Play Round
 		//End Round
 		//If Game is still on, repeat
+		playCard(this.dealerId+1);
+	}
+	
+	public void userCardPlayed(Card c)
+	{
+		this.currentRound.addCurrentCard(c);
+		playCard(0);
+	}
+	
+	public void trumpCardRequested(int playerId)
+	{
+		if(!this.currentRound.getIsTrumpPlayed())
+		{
+			this.displayCardListener.onDisplayTrumpCard(playerId);
+			this.playCard(playerId);
+		}
+	}
+	
+	public void playCard(int playerId)
+	{
+		if(playerId==3)//user-Ask for card
+		{
+			this.requestUserCardListener.onRequestUserCard();
+			return;
+		}
+		while(this.currentRound.getCurrentChalNumber()<6)
+		{
+			for(int i=playerId;i<4;i=(i+1)%4)
+			{
+				if(this.currentRound.getCurrentChalCards().size()==4)
+				{
+					this.currentRound.endChal();
+					this.displayMessageListener.onDisplayMessage("End of current Chal");
+					break;
+				}
+				if(playerId==3)//user
+				{
+					this.requestUserCardListener.onRequestUserCard();
+					return;
+				}
+				Card c=this.players.get(i).playCard();
+				if(c!=null)
+				{
+					this.currentRound.addCurrentCard(c);
+					this.displayCardListener.onDisplayUserCard(c);
+				}
+				else
+				{
+					if(this.players.get(i).getTrumpAsked())
+					{
+						this.displayMessageListener.onDisplayMessage("Trump requested by "+this.players.get(i).getName());
+						this.trumpCardRequested(i);
+					}
+				}
+			}
+		}
+		this.endRound();
+		this.displayMessageListener.onDisplayMessage("End of round");
 	}
 	
 }

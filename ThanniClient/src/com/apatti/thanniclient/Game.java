@@ -7,12 +7,13 @@ import java.util.Random;
 
 import model.Bid;
 import model.Card;
+import model.DisplayMessageListener;
 import model.Hand;
 import model.Suite;
 import model.TDeck;
 import model.TPlayer;
 
-public class Game {
+public class Game implements DisplayMessageListener{
 
 	static model.Game game;
 	static TDeck deck;
@@ -32,7 +33,7 @@ public class Game {
         playerNames.add(topPlayer);
         playerNames.add(rightPlayer);
         playerNames.add("User");
-        game = new model.Game(playerNames);
+        game = new model.Game(playerNames,null,null,new Game());
         
         game.startNewRound();
         deck = new TDeck("");
@@ -109,6 +110,12 @@ public class Game {
             dealerId=(dealerId+1)%4;
         }
     }
+
+	@Override
+	public void onDisplayMessage(String message) {
+		// TODO Auto-generated method stub
+		System.out.println(message);
+	}
 
 
 }

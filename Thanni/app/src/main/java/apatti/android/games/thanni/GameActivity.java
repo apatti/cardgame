@@ -1,17 +1,10 @@
 package apatti.android.games.thanni;
 
 import android.content.ClipData;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,30 +12,22 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.UUID;
 
 import model.Bid;
 import model.Card;
+import model.DisplayCardListener;
+import model.DisplayMessageListener;
 import model.Game;
-import model.Hand;
+import model.RequestUserCardListener;
 import model.TDeck;
-
 
 public class GameActivity extends ActionBarActivity {
 
@@ -84,12 +69,84 @@ public class GameActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class GameFragment extends Fragment {
+    public static class GameFragment extends Fragment implements DisplayCardListener, DisplayMessageListener, RequestUserCardListener {
 
         Game game;
         TDeck deck;
         private Bid userBid;
 
+        @Override
+        public void onDisplayUserCard(Card card) {
+            playCard(getView(),card.getResourceId());
+        }
+
+        @Override
+        public void onDisplayTrumpCard(int playerId) {
+            ((ImageView)getView().findViewById(R.id.imgViewTrump)).setImageResource(game.getCurrentRound().getRoundTrumpCard().getResourceId());
+        }
+
+        @Override
+        public void onDisplayMessage(String message) {
+            Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onRequestUserCard() {
+            Toast.makeText(getActivity(),"Play the card",Toast.LENGTH_SHORT).show();
+        }
+
+        private final class TrumpCardDragListener implements View.OnDragListener{
+            Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
+            Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                int action = event.getAction();
+                if(v.findViewById(R.id.imgViewTrump)==null)
+                    return false;
+                switch (action)
+                {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        if(event.getClipDescription().getLabel().equals("playCard")) {
+                            ((ImageView)v).setAlpha((float)0.7);
+                            v.invalidate();
+                            return true;
+                        }
+                        return false;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        ((ImageView)v).setAlpha((float)0.2);
+                        v.invalidate();
+                        v.setBackgroundDrawable(enterShape);
+                        return true;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        ((ImageView)v).setAlpha((float)0.7);
+                        v.invalidate();
+                        v.setBackgroundDrawable(normalShape);
+                        return true;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        ((ImageView)v).setAlpha((float)1);
+                        v.invalidate();
+                        v.setBackgroundDrawable(normalShape);
+                        return true;
+                    case DragEvent.ACTION_DROP:
+                        View view = (View)event.getLocalState();
+                        ((ImageView)v).setImageResource(R.drawable.b1fv);
+                        ((ImageView)v).setAlpha((float) 1);
+                        ((ImageView)v).setOnDragListener(null);
+                        Toast.makeText(getActivity(),((Card)((ImageView)view).getTag()).getFaceValue(),Toast.LENGTH_SHORT).show();
+                        game.getPlayers().get(3).setTrump((Card) ((ImageView) view).getTag());
+                        game.getCurrentRound().setRoundTrumpCard(game.getPlayers().get(3).getTrump());
+                        displayUserCards(v.getRootView());
+                        setBidControlVisibility(v.getRootView(),View.GONE);
+                        playRound(v.getRootView());
+                        v.invalidate();
+                        return  true;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        }
         private final class PlayedCardsDragListener implements View.OnDragListener{
             Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
             Drawable normalShape = getResources().getDrawable(R.drawable.shape);
@@ -136,6 +193,7 @@ public class GameActivity extends ActionBarActivity {
                         displayUserCards(v.getRootView());
                         ((ImageView)v.findViewById(R.id.imgViewPlayedCard4)).clearColorFilter();
                         v.invalidate();
+                        game.playCard(0);
                         return  true;
                     default:
                         break;
@@ -260,6 +318,7 @@ public class GameActivity extends ActionBarActivity {
                 }
             }
             ((LinearLayout)rootView.findViewById(R.id.llBidControl)).setVisibility(visibility);
+            //this.getActivity().findViewById(R.id.llBidControl).setVisibility(visibility);
         }
 
         private void freePlayingCard(View v)
@@ -326,7 +385,7 @@ public class GameActivity extends ActionBarActivity {
             playerNames.add(topPlayer);
             playerNames.add(rightPlayer);
             playerNames.add("User");
-            game = new Game(playerNames);
+            game = new Game(playerNames,this,this,this);
 
             ((TextView)rootView.findViewById(R.id.txtViewTopPlayerName)).setText(topPlayer);
             ((TextView)rootView.findViewById(R.id.txtViewLeftPlayerName)).setText(leftPlayer);
@@ -360,17 +419,22 @@ public class GameActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 userBid = (Bid)v.getTag();
+                Toast.makeText(getActivity(),"Bid",Toast.LENGTH_SHORT).show();
                 game.getCurrentRound().getRoundBidding().set(3, (Bid) v.getTag());
                 if(userBid!=Bid.PASS)
                     game.getCurrentRound().setRoundTarget(userBid);
-                else
-                    setBidControlVisibility(v.getRootView(),View.GONE);
+                else {
+                    Toast.makeText(getActivity(),"PASS",Toast.LENGTH_SHORT).show();
+                    setBidControlVisibility(v.getRootView(), View.GONE);
+                    Toast.makeText(getActivity(),"GONE ",Toast.LENGTH_SHORT).show();
+                }
                 bidProcess(v.getRootView(),true);
             }
         };
 
         private void roundSetUp(View rootView)
         {
+
             game.startNewRound();
             deck = new TDeck("");
             for(int i=0;i<52;i++)
@@ -398,7 +462,9 @@ public class GameActivity extends ActionBarActivity {
             ImageView imgViewRpC5 = ((ImageView)rootView.findViewById(R.id.imgViewRpC5));
             ImageView imgViewRpC6 = ((ImageView)rootView.findViewById(R.id.imgViewRpC6));
 
+            ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setImageResource(R.drawable.c0);
             ((ImageView)rootView.findViewById(R.id.imgViewPlayedCard4)).setOnDragListener(new PlayedCardsDragListener());
+            ((ImageView)rootView.findViewById(R.id.imgViewPlayedCard4)).setEnabled(false);
             freePlayingCard(rootView);
 
             imgViewLpC1.setVisibility(View.VISIBLE);
@@ -434,7 +500,7 @@ public class GameActivity extends ActionBarActivity {
             }
             ((ImageView)rootView.findViewById(R.id.imgViewUWin)).setVisibility(View.INVISIBLE);
             ((ImageView)rootView.findViewById(R.id.imgViewOWin)).setVisibility(View.INVISIBLE);
-            ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setVisibility(View.INVISIBLE);
+            //((ImageView)rootView.findViewById(R.id.imgViewTrump)).setVisibility(View.INVISIBLE);
             ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setOnClickListener(TrumpClickListener);
 
             ((TextView)rootView.findViewById(R.id.txtViewTrump)).setText(getResources().getString(R.string.trumpTxt));
@@ -495,6 +561,7 @@ public class GameActivity extends ActionBarActivity {
                     if(b!=Bid.PASS)
                     {
                         game.getCurrentRound().setRoundTarget(b);
+                        j=0;
                     }
                     else
                         j++;
@@ -502,19 +569,34 @@ public class GameActivity extends ActionBarActivity {
             }
             if(j==4)
             {
-                game.getCurrentRound().getRoundBidding().set(game.getDealerId()+1,Bid.BEAT);
+                int playerId=(game.getDealerId()+1)%4;
+                game.getCurrentRound().getRoundBidding().set(playerId,Bid.BEAT);
                 game.getCurrentRound().setRoundTarget(Bid.BEAT);
-                showBid(rootView, game.getDealerId() + 1, Bid.BEAT);
-                game.getCurrentRound().setRoundTrumpCard(game.getPlayers().get(game.getDealerId() + 1).getTrump());
-                game.getCurrentRound().setRoundTrumpTeam((game.getDealerId() + 1)%2);
+                game.getCurrentRound().setRoundTrumpTeam(playerId);
+                if(playerId==3) {
+                    Toast.makeText(getActivity(),"Please select trump card",Toast.LENGTH_LONG).show();
+                    ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setOnDragListener(new TrumpCardDragListener());
+                    return;
+                }
+                showBid(rootView, playerId, Bid.BEAT);
+                game.getCurrentRound().setRoundTrumpCard(game.getPlayers().get(playerId).getTrump());
             }
             else
             {
+                game.getCurrentRound().setRoundTrumpTeam(i);
+                if(i==3)
+                {
+                    Toast.makeText(getActivity(),"Please select trump card",Toast.LENGTH_LONG).show();
+                    ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setOnDragListener(new TrumpCardDragListener());
+                    return;
+                }
                 game.getCurrentRound().setRoundTrumpCard(game.getPlayers().get(i).getTrump());
-                game.getCurrentRound().setRoundTrumpTeam(i%2);
             }
             ((TextView)rootView.findViewById(R.id.txtViewTrumpTeam)).setText(getResources().getString(R.string.trumpTeamTxt)+game.getPlayers().get(i).getName());
             ((TextView)rootView.findViewById(R.id.txtViewRoundTarget)).setText(getResources().getString(R.string.roundTargetTxt)+game.getCurrentRound().getRoundTarget().getValue());
+            ((ImageView)rootView.findViewById(R.id.imgViewTrump)).setImageResource(R.drawable.b1fv);
+
+            playRound(rootView);
             return;
         }
 
@@ -553,5 +635,20 @@ public class GameActivity extends ActionBarActivity {
             //backgroundView.setImageURI();
             return rootView;
         }
+
+        private void playRound(View rootView)
+        {
+            dealCards(2);
+            displayUserCards(rootView);
+            ((ImageView)rootView.findViewById(R.id.imgViewPlayedCard4)).setEnabled(true);
+            this.game.StartGame();
+            //if(leadPlayerId==3)
+                //Toast.makeText(getActivity(),"Play the hand",Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
+
     }
 }

@@ -41,7 +41,7 @@ public class Chal {
 				winCard=c.getValue();
 				winIndex=index;
 			}
-			else if(c.getSuit()==this.rd.getRoundTrumpCard().getSuit()&&c.getValue()+30>winCard)
+			else if(this.rd.getIsTrumpPlayed()&&c.getSuit()==this.rd.getRoundTrumpCard().getSuit()&&c.getValue()+30>winCard)
 			{
 				winCard = c.getValue()+30;
 				winIndex=index;

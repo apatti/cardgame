@@ -23,6 +23,18 @@ public class Hand{
 		this.cards.add(card);
 	}
 	
+	public void removeCard(Card card)
+	{
+		for(int i=0;i<cards.size();i++)
+		{
+			if(cards.get(i).getId()==card.getId())
+			{
+				cards.remove(i);
+				return;
+			}
+		}
+	}
+	
 	public ArrayList<Card> getCards()
 	{
 		return cards;

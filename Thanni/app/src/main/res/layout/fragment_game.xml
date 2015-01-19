@@ -1,20 +1,20 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context=".GameActivity$PlaceholderFragment"
     >
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/imgViewMainBackground"
         android:src="@drawable/background"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         />
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,8 +22,7 @@
             android:id="@+id/txtViewTopPlayerName"
             android:textStyle="bold"
             android:gravity="center_horizontal"
-            android:layout_centerInParent="true"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
+            android:layout_centerInParent="true"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,14 +41,14 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/b1fv"
-            android:visibility="invisible"/>
+            android:src="@drawable/c0"
+            android:layout_weight="1"/>
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/llTopPlayer"
             android:orientation="horizontal"
-            android:layout_toRightOf="@+id/llleftPlayer"
+            android:layout_toRightOf="@+id/imgViewTrump"
             android:layout_weight="1"
             android:layout_below="@id/txtViewTopPlayerName"
             android:gravity="center_horizontal"
@@ -58,6 +57,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
                 android:id="@+id/imgViewTpC1"
                 android:src="@drawable/b1fv"
@@ -68,31 +68,41 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewTpC2"
                 android:src="@drawable/b1pr"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewTpC3"
                 android:src="@drawable/b1pr"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewTpC4"
                 android:src="@drawable/b1pr"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewTpC5"
                 android:src="@drawable/b1pr"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewTpC6"
                 android:src="@drawable/b1pr"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -109,7 +119,7 @@
             android:layout_weight="1"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/llTopPlayer"
-            android:layout_above="@+id/llUserPlayer"
+            android:layout_above="@+id/imgViewOWin"
             android:gravity="center_vertical"
             >
 
@@ -118,8 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:id="@+id/txtViewLeftPlayerName"
-                android:textStyle="bold"
-                android:textSize="@dimen/abc_text_size_display_1_material"/>
+                android:textStyle="bold"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -240,7 +249,7 @@
             android:layout_weight="1"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/llTopPlayer"
-            android:layout_above="@+id/llUserPlayer"
+            android:layout_above="@+id/imgViewUWin"
             android:gravity="center_vertical"
             >
             <TextView
@@ -322,6 +331,7 @@
             android:layout_toRightOf="@+id/llleftPlayer"
             android:layout_toLeftOf="@+id/llRightPlayer"
             android:layout_above="@+id/llUserPlayer"
+            android:layout_below="@+id/llPlayedCards"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:visibility="gone"
@@ -373,10 +383,10 @@
             android:id="@+id/llUserPlayer"
             android:orientation="horizontal"
             android:layout_toRightOf="@+id/llleftPlayer"
-            android:layout_toLeftOf="@+id/llRightPlayer"
-            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/imgViewUWin"
             android:layout_alignParentBottom="true"
             android:gravity="center_horizontal"
+            android:layout_weight="1"
             >
             <ImageView
                 android:layout_width="wrap_content"
@@ -432,7 +442,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             android:src="@drawable/b1fv"
-            android:visibility="invisible"/>
+            android:visibility="visible"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -444,25 +454,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewPlayedCard1"
-                android:src="@drawable/b1fv"/>
+                android:src="@drawable/b1fv"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewPlayedCard2"
                 android:src="@drawable/b1fv"
-                android:layout_marginLeft="-50dp"/>
+                android:layout_marginLeft="-50dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewPlayedCard3"
                 android:layout_marginLeft="-50dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
                 android:src="@drawable/b1fv"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgViewPlayedCard4"
                 android:src="@drawable/b1fv"
-                android:layout_marginLeft="-50dp"/>
+                android:layout_marginLeft="-50dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"/>
 
         </LinearLayout>
         </RelativeLayout>

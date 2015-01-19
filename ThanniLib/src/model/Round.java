@@ -102,17 +102,16 @@ public class Round {
 		return this.roundChals.get(this.getCurrentChalNumber()).getCardSet();
 	}
 	
-	private int getCurrentChalNumber()
+	public int getCurrentChalNumber()
 	{
 		if(this.roundChals.size()==0)
-			return 0;
-		else
-			return this.roundChals.size()-1;
+			addNewChal();
+		
+		return this.roundChals.size()-1;
 	}
 	
 	public void setRoundTrumpCard(Card roundTrump)
 	{
-		this.isTrumpPlayed=true;
 		this.roundTrump=roundTrump;
 	}
 	public Card getRoundTrumpCard()
