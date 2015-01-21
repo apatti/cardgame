@@ -215,7 +215,7 @@
             android:textStyle="bold"
             android:text="@string/scoreTxt"
             android:textAllCaps="true"
-            android:textSize="@dimen/abc_text_size_headline_material"/>
+            android:paddingRight="10dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
             android:id="@+id/txtViewTrumpTeam"
             android:textStyle="bold"
             android:text="@string/trumpTeamTxt"
-            android:textSize="@dimen/abc_text_size_large_material"/>
+            android:paddingRight="10dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -232,7 +232,8 @@
             android:layout_below="@+id/txtViewTrumpTeam"
             android:id="@+id/txtViewTrump"
             android:text="@string/trumpTxt"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:paddingRight="10dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -240,7 +241,8 @@
             android:layout_below="@+id/txtViewTrump"
             android:id="@+id/txtViewRoundTarget"
             android:text="@string/roundTargetTxt"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:paddingRight="10dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -323,6 +325,29 @@
             android:layout_centerInParent="true"
             android:id="@+id/txtViewRightPlayerScore"
             android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/llGameControl"
+            android:orientation="horizontal"
+            android:layout_above="@+id/llUserPlayer"
+            android:layout_below="@+id/llPlayedCards"
+            android:layout_toRightOf="@+id/llleftPlayer"
+            android:layout_toLeftOf="@+id/llRightPlayer"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:visibility="gone">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/startChal"
+                android:id="@+id/btnChalStart"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/startRound"
+                android:id="@+id/btnRoundStart"/>
+            </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

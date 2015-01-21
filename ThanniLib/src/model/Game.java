@@ -84,73 +84,73 @@ public class Game {
 		this.changeScore(roundScore);
 		if(currentScoreSign!=(int)Math.signum(this.score))
 			this.dealerId=(this.dealerId+1)%4;
-	}
-	
-	public void StartGame()
-	{
-		//Start New Round
-		//Deal cards
-		//Play Round
-		//End Round
-		//If Game is still on, repeat
-		playCard(this.dealerId+1);
+		this.displayCardListener.onRoundEnd();
+		this.displayMessageListener.onDisplayMessage("End of round");
 	}
 	
 	public void userCardPlayed(Card c)
 	{
 		this.currentRound.addCurrentCard(c);
-		playCard(0);
+		playGame();
 	}
 	
 	public void trumpCardRequested(int playerId)
 	{
+		System.out.println("Trump requested by :"+playerId+" IsPlayed:"+this.currentRound.getIsTrumpPlayed());
 		if(!this.currentRound.getIsTrumpPlayed())
 		{
+			this.currentRound.setIsTrumpPlayed();
+			System.out.println("Trump Team:"+this.currentRound.getRoundTrumpTeam());
+			System.out.println("Trump Team Cards:"+this.getPlayers().get(this.currentRound.getRoundTrumpTeam()).getHand().getCards().size());
+			this.getPlayers().get(this.currentRound.getRoundTrumpTeam()).getHand().addCard(this.currentRound.getRoundTrumpCard());
+			System.out.println("Trump Team Cards:"+this.getPlayers().get(this.currentRound.getRoundTrumpTeam()).getHand().getCards().size());
 			this.displayCardListener.onDisplayTrumpCard(playerId);
-			this.playCard(playerId);
+			this.playGame();
 		}
 	}
 	
-	public void playCard(int playerId)
+	
+	
+	public void playGame()
 	{
-		if(playerId==3)//user-Ask for card
+		System.out.println("PlayerID:"+this.currentRound.getNextPlayerIndex());
+		
+		if(this.currentRound.getCurrentChalNumber()<6)
 		{
-			this.requestUserCardListener.onRequestUserCard();
-			return;
-		}
-		while(this.currentRound.getCurrentChalNumber()<6)
-		{
-			for(int i=playerId;i<4;i=(i+1)%4)
+			System.out.println("CHAL:"+this.currentRound.getCurrentChalNumber());
+			while(this.currentRound.getCurrentChalCards().size()!=4)
 			{
-				if(this.currentRound.getCurrentChalCards().size()==4)
-				{
-					this.currentRound.endChal();
-					this.displayMessageListener.onDisplayMessage("End of current Chal");
-					break;
-				}
-				if(playerId==3)//user
+				if(this.currentRound.getNextPlayerIndex()==3)//user
 				{
 					this.requestUserCardListener.onRequestUserCard();
 					return;
 				}
-				Card c=this.players.get(i).playCard();
+				Card c=this.players.get(this.currentRound.getNextPlayerIndex()).playCard();
+				if(c!=null)
+					System.out.println("Card played by +"+this.currentRound.getNextPlayerIndex()+" is "+c.getFaceValue()+"-"+c.getSuit());
+				else
+					System.out.println("Card played by +"+this.currentRound.getNextPlayerIndex()+" is NUll and he requested :"+this.players.get(this.currentRound.getNextPlayerIndex()).getTrumpAsked());
 				if(c!=null)
 				{
+					this.players.get(this.currentRound.getNextPlayerIndex()).getHand().removeCard(c);
 					this.currentRound.addCurrentCard(c);
 					this.displayCardListener.onDisplayUserCard(c);
 				}
 				else
 				{
-					if(this.players.get(i).getTrumpAsked())
+					if(this.players.get(this.currentRound.getNextPlayerIndex()).getTrumpAsked())
 					{
-						this.displayMessageListener.onDisplayMessage("Trump requested by "+this.players.get(i).getName());
-						this.trumpCardRequested(i);
+						this.displayMessageListener.onDisplayMessage("Trump requested by "+this.players.get(this.currentRound.getNextPlayerIndex()).getName());
+						this.trumpCardRequested(this.currentRound.getNextPlayerIndex());
 					}
 				}
 			}
+			this.currentRound.endChal();
+			System.out.println("End of current chal");
+			this.displayMessageListener.onDisplayMessage("End of current Chal");
+			this.displayCardListener.onDisplayUserCard(null);
+			return;
 		}
-		this.endRound();
-		this.displayMessageListener.onDisplayMessage("End of round");
 	}
 	
 }

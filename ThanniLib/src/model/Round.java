@@ -5,7 +5,6 @@ import java.util.ArrayList;
 /**
  * Represents one round in a game.
  * @author apatti
- *
  */
 public class Round {
 	private Bid roundTarget;
@@ -18,7 +17,7 @@ public class Round {
 	private ArrayList<Chal> roundChals;
 	private int dealerId;
 	private ArrayList<Bid> roundBidding;
-	private int bidderIndex;
+	private int nextPlayerIndex;
 	
 	public Round(int dealerId)
 	{
@@ -29,12 +28,17 @@ public class Round {
 		roundChals = new ArrayList<Chal>(6);
 		isTrumpPlayed=false;
 		this.dealerId=dealerId;
-		bidderIndex = (this.dealerId+1)%4;
 		roundBidding = new ArrayList<Bid>(4);
 		roundBidding.add(Bid.DIDNTBID);
 		roundBidding.add(Bid.DIDNTBID);
 		roundBidding.add(Bid.DIDNTBID);
 		roundBidding.add(Bid.DIDNTBID);
+		nextPlayerIndex=(dealerId+1)%4;
+	}
+	
+	public int getDealerId()
+	{
+		return this.dealerId;
 	}
 	
 	public void addRoundBidding(int position,Bid bid)
@@ -72,29 +76,32 @@ public class Round {
 	
 	public void addNewChal()
 	{
-		this.roundChals.add(new Chal(this));
+		if(this.roundChals.size()<6)
+			this.roundChals.add(new Chal(this));
 	}
 	
 	public void addCurrentCard(Card c)
 	{
 		this.roundChals.get(this.roundChals.size()-1).addCard(c);
+		this.nextPlayerIndex=(this.nextPlayerIndex+1)%4;
 		this.roundPlayedCards.add(c);
 	}
 	
 	public int endChal()
 	{
-		int winner = this.roundChals.get(this.roundChals.size()-1).winner();
+		int winner = this.roundChals.get(this.roundChals.size()-1).getWinner();
 		//winner=1 then dealer team win else other team win.
 		//this.addRoundWinnings((1-winner)-dealerId%2, this.roundChals.get(this.roundChals.size()-1).getCardSet());
-		if(winner==1)
-		{
-			this.addRoundWinnings(dealerId%2, this.roundChals.get(this.roundChals.size()-1).getCardSet());
-		}
-		else
-			this.addRoundWinnings(1-dealerId%2, this.roundChals.get(this.roundChals.size()-1).getCardSet());
-		
+		this.addRoundWinnings(winner%2, this.roundChals.get(this.roundChals.size()-1).getCardSet());
+		System.out.println("Chal winner:"+winner);
+		this.nextPlayerIndex=winner;
 		return winner;
 			
+	}
+	
+	public int getNextPlayerIndex()
+	{
+		return this.nextPlayerIndex;
 	}
 	
 	public ArrayList<Card> getCurrentChalCards()

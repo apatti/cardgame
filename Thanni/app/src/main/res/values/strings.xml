@@ -16,9 +16,11 @@
     <string name="thanni_bet">Thanni</string>
     <string name="pass_bet">Pass</string>
     <string name="dealer">Dealer</string>
-    <string name="scoreTxt">Score:0</string>
-    <string name="trumpTxt">Trump:?</string>
-    <string name="trumpTeamTxt">Team:?</string>
-    <string name="roundTargetTxt">Target:0</string>
+    <string name="scoreTxt">Score</string>
+    <string name="trumpTxt">Trump</string>
+    <string name="trumpTeamTxt">Team</string>
+    <string name="roundTargetTxt">Target</string>
+    <string name="startChal">Play</string>
+    <string name="startRound">New Round</string>
 
 </resources>

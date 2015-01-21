@@ -205,7 +205,7 @@ public class TPlayer extends Player {
 			}
 		}
 		ArrayList<Card> playedCards = game.getCurrentRound().getRoundPlayedCards();
-		ArrayList<Card> rdChals = game.getCurrentRound().getCurrentChalCards();
+		ArrayList<Card> rdChals = new ArrayList<Card>(game.getCurrentRound().getCurrentChalCards());
 		Suite leadSuite = null;
 		if(rdChals.size()!=0)
 			leadSuite=rdChals.get(0).getSuit();
@@ -247,7 +247,10 @@ public class TPlayer extends Player {
 				else
 				{
 					ArrayList<Card> trumpCards = handDetails.get(trumpCard.getSuit());
-					return trumpCards.get(trumpCards.size()-1);
+					if(trumpCards!=null)
+						return trumpCards.get(trumpCards.size()-1);
+					else
+						return this.getHand().getCards().get(handSize-1);
 				}
 			}
 		case 2:
@@ -284,12 +287,15 @@ public class TPlayer extends Player {
 					else
 					{
 						ArrayList<Card> trumpCards = handDetails.get(trumpCard.getSuit());
-						return trumpCards.get(trumpCards.size()-1);
-						
+						if(trumpCards!=null)
+							return trumpCards.get(trumpCards.size()-1);
+						else
+							return this.getHand().getCards().get(handSize-1);
 					}
 				}
 			}
 			default:
+				int i=4/0;
 				return null;
 		}
 	}
